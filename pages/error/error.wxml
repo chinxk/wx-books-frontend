@@ -1,0 +1,4 @@
+<!--error.wxml-->
+<view class="container">
+  <text>{{err_text}}</text>
+</view>

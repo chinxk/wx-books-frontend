@@ -1,0 +1,9 @@
+<!--pages/my.wxml-->
+<text>pages/my.wxml</text>
+<scroll-view  scroll-y="true" style="display:flex;  width: 100%;" >
+  <view wx:for="{{books}}" style="width: 100%; display: inline-grid">
+    <image  style="width: 140px; height: 80px;" src="{{item.img}}" mode="aspectFit"></image>
+    <text style="text-align: center;">{{item.title}}</text>
+    <text style="text-align: center;">{{item.author}}</text>
+  </view>
+</scroll-view>
