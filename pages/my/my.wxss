@@ -1,1 +1,123 @@
 /* pages/my.wxss */
+.weui-half-screen-dialog__bd {
+  padding: 0
+}
+
+.weui-half-screen-dialog__ft {
+  padding: 0
+}
+
+.pannal {
+  display: flex;
+  position: fixed;
+  background-color: white;
+  z-index: 100;
+  top: 0;
+  height: 60rpx;
+  width: 100%;
+  margin: auto;
+}
+
+.container-edit {
+  display: flex;
+  top: 50rpx;
+  position: relative;
+  animation: edit-expand 2s forwards;
+}
+
+.container-read {
+  display: flex;
+  top: 50rpx;
+  position: relative;
+  animation: edit-shrink 2s forwards;
+}
+
+@keyframes edit-expand {
+  from {
+    top: 50rpx;
+  }
+
+  to {
+    top: 110rpx;
+  }
+}
+
+@keyframes edit-shrink {
+  from {
+    top: 110rpx;
+  }
+
+  to {
+    top: 50rpx;
+  }
+}
+
+.btn-container {
+  display: flex;
+  position: fixed;
+  z-index: 11;
+  width: 100%;
+  top: 60rpx
+}
+
+.btn-container.edit {
+  animation: btn-expand 2s forwards;
+}
+
+.btn-container.read {
+  animation: btn-shrink 2s forwards;
+}
+
+@keyframes btn-expand {
+  from {
+    top: -60rpx;
+  }
+
+  to {
+    top: 60rpx;
+  }
+}
+
+@keyframes btn-shrink {
+  from {
+    top: 60rpx;
+  }
+
+  to {
+    top: -60rpx;
+  }
+}
+
+.cell-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.small-text {
+  font-size: small;
+  font-style: oblique;
+  color: grey;
+}
+
+.cell-img {
+  margin-right: 30rpx;
+  vertical-align: middle;
+  width: 150rpx;
+  height: 150rpx;
+}
+
+.detail {
+  display: flex;
+  justify-content: left;
+}
+
+.detail view image {
+  width: 300rpx;
+  height: 300rpx;
+}
+
+.detail scroll-view {
+  height: 700rpx;
+  display: flex;
+  flex-direction: column;
+}

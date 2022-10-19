@@ -1,15 +1,27 @@
 <!--pages/scan.wxml-->
-<camera mode="scanCode" device-position="back" flash="off" 
- bindscancode="takeCode" style="width: 100%; height: 400px;"></camera>
-<scroll-view  scroll-x="true" style=" height: 120px; display:flex;  width: 100%;white-space: nowrap;" >
-  <view wx:for="{{scannedBooks}}" style="width: 140px; height: 30px; display: inline-grid">
-    <image  style="width: 140px; height: 80px;" src="{{item.img}}" mode="aspectFit"></image>
-    <text style="text-align: center;">{{item.title}}</text>
-    <text style="text-align: center;">{{item.author}}</text>
+<wxs module="util" src="../../utils/util.wxs"></wxs>
+
+<camera mode="scanCode" device-position="back" flash="off" bindscancode="takeCode">
+</camera>
+<scroll-view class="scanned-container" scroll-x="true" scroll-into-view="{{toViewId}}">
+  <view wx:for="{{scannedBooks}}" wx:key="id" class="scanned-book" id="book{{item.book.id}}">
+    <image src="{{item.book.img}}" mode="aspectFit"></image>
+    <text>{{util.truncate(item.book.title, 10)}}</text>
+    <text>{{util.truncate(item.book.author, 10)}}</text>
   </view>
 </scroll-view>
-<view  style="display:flex;  width: 100%;white-space: nowrap;">
-  <button type="primary" bindtap="takeCode">测试</button>
-  <button type="primary" bindtap="stock">入库</button>
-  <button >取消</button>
+<view class="buttons-container">
+  <!-- <button type="primary" bindtap="takeCode">测试</button> -->
+  <button bindtap="stock">
+    <view class="btn-control-pannal">
+      <image class="svg-icon-small" src="/components/library.svg"></image>
+      <text>入库</text>
+    </view>
+  </button>
+  <button>
+    <view class="btn-control-pannal">
+      <image class="svg-icon-small" src="/components/cancel.svg"></image>
+      <text>取消</text>
+    </view>
+  </button>
 </view>

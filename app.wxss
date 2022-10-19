@@ -1,4 +1,8 @@
 /**app.wxss**/
+/* @import '/components/font-awesome.wxss';
+@import '/components/stylesheet.wxss'; */
+/* @import '/style/weui.wxss'; */
+
 .container {
   height: 100%;
   display: flex;
@@ -8,3 +12,18 @@
   padding: 200rpx 0;
   box-sizing: border-box;
 } 
+.svg-icon-small {
+  display: inline;
+  width: 40rpx !important;
+  height: 40rpx !important;
+  margin-bottom: 0;
+}
+.btn-control-pannal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.btn-control-pannal text {
+  font-size: small;
+  font-weight: 500;
+}

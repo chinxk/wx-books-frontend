@@ -1,1 +1,40 @@
 /* pages/scan.wxss */
+
+camera {
+  height: 60vh;
+}
+.scanned-container {
+  height: 30vh; display:flex;  white-space: nowrap;
+}
+.scanned-container .scanned-book:last-child {
+  animation: book-appear 2s forwards;
+}
+.scanned-book {
+  display: inline-grid;
+}
+.scanned-book image {
+  width: 30vw;
+  height: 16vh;
+  
+}
+
+.scanned-book text {
+  width: inherit;
+  height: inherit;
+  text-align: center;
+}
+
+@keyframes book-appear {
+  from {
+    opacity: 0;
+    /* width: 0 */
+  }
+
+  to {
+    opacity: 100;
+    /* width: 30vw */
+  }
+}
+.buttons-container {
+  display:flex;  width: 100%;white-space: nowrap;
+}

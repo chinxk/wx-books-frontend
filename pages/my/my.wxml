@@ -1,9 +1,72 @@
 <!--pages/my.wxml-->
-<text>pages/my.wxml</text>
-<scroll-view  scroll-y="true" style="display:flex;  width: 100%;" >
-  <view wx:for="{{books}}" style="width: 100%; display: inline-grid">
-    <image  style="width: 140px; height: 80px;" src="{{item.img}}" mode="aspectFit"></image>
-    <text style="text-align: center;">{{item.title}}</text>
-    <text style="text-align: center;">{{item.author}}</text>
+<wxs module="util" src="../../utils/util.wxs"></wxs>
+
+<form bindsubmit="formSubmit">
+  <view>
+    <view class="pannal">
+      <span style="width:60rpx;">
+        <image class="svg-icon-small" src="/components/search.svg"></image>
+      </span>
+      <input class="weui-input" style="margin: auto" maxlength="30" bindinput="bindSearchInput" placeholder="输入书名或作者进行搜索" />
+      <span style="width:60rpx;" bindtap="bindEllipsis">
+        <image class="svg-icon-small" src="/components/ellipsis-circle.svg"></image>
+      </span>
+    </view>
+    <scroll-view scroll-y="true" enable-flex="true" class="{{edit_mode ? 'container-edit' : 'container-read' }}">
+      <checkbox-group name="checkbox" bindchange="checkboxChange">
+        <view wx:for="{{books}}" wx:key="id" style="width: 100%;">
+          <mp-slideview buttons="{{slideButtons}}" bindbuttontap="slideButtonTap" disable="{{edit_mode}}" data-isbn="{{item.book.isbn}}" data-book-id="{{item.book.id}}" icon="true">
+            <mp-cell>
+              <checkbox slot="icon" value="{{item.book.id}}" wx:if="{{edit_mode}}" data-index="{{index}}" />
+              <image bindtap="bindViewTap" data-isbn="{{item.book.isbn}}" slot="title" src="{{item.book.img}}" class="cell-img"></image>
+              <view class="cell-text" bindtap="bindViewTap">
+                <text data-isbn="{{item.book.isbn}}">{{util.truncate(item.book.title, 30)}}</text>
+                <text class="small-text">{{util.truncate(item.book.author, 15)}}</text>
+                <text class="small-text">{{item.readed ? '已读' : '未读'}}</text>
+              </view>
+            </mp-cell>
+          </mp-slideview>
+        </view>
+      </checkbox-group>
+    </scroll-view>
+    <view class="btn-container {{edit_mode ? 'edit' : 'read' }}">
+      <button bindtap="bindReadTap">
+        <view class="btn-control-pannal">
+          <image class="svg-icon-small" src="/components/book-fill.svg"></image>
+          <text>设为已读</text>
+        </view>
+      </button>
+      <button bindtap="bindUnreadTap">
+        <view class="btn-control-pannal">
+          <image class="svg-icon-small" src="/components/book.svg"></image>
+          <text>设为未读</text>
+        </view>
+      </button>
+      <button bindtap="bindRemoveTap">
+        <view class="btn-control-pannal">
+          <image class="svg-icon-small" src="/components/del.svg"></image>
+          <text>删除</text>
+        </view>
+      </button>
+    </view>
   </view>
-</scroll-view>
+</form>
+<mp-halfScreenDialog bindbuttontap="" show="{{dialog}}" maskClosable="{{true}}" title="详细" catchtouchmove="preventTouchMove">
+  <view slot='desc'>
+    <view class="detail">
+      <view>
+        <image src="{{selected.book.img}}"></image>
+      </view>
+      <scroll-view class="small-text" scroll-y="true" enable-flex="true">
+        <text>书名：{{selected.book.title}}</text>
+        <text>ISBN：{{selected.book.isbn}}</text>
+        <text>作者：{{selected.book.author}}</text>
+        <text>价格：{{selected.book.price}}</text>
+        <text>页数：{{selected.book.page}}</text>
+        <text>开本：{{selected.book.format}}</text>
+        <text>出版社：{{selected.book.publisher}}</text>
+        <text>简介：{{selected.book.gist}}</text>
+      </scroll-view>
+    </view>
+  </view>
+</mp-halfScreenDialog>

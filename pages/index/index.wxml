@@ -1,25 +1,59 @@
 <!--index.wxml-->
+<wxs module="util" src="../../utils/util.wxs"></wxs>
+
 <view class="container">
-  <view class="userinfo">
-    <block wx:if="{{canIUseOpenData}}">
-      <view class="userinfo-avatar" bindtap="bindViewTap">
-        <open-data type="userAvatarUrl"></open-data>
-      </view>
-      <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称A </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称B </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
+  <view class="card head" style="height: 20vh;">
+    <block wx:if="{{userInfo.avatar_url}}">
+      <image class="userinfo-avatar" src="{{userInfo.avatar_url}}" mode="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nick_name}}</text>
     </block>
     <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      <button bindtap="getScanCode"> Scan cod1e</button>
-      <button bindtap="addBooks"> Add Books</button>
+      <image class="userinfo-avatar" src="/components/my-fill.png" mode="cover"></image>
+      <text class="userinfo-nickname">匿名用户</text>
+    </block>
+    <image class="svg-icon-small" src="/components/update.svg" bindtap="getUserProfile"></image>
+  </view>
+
+  <view class="card">
+    <block wx:if="{{allBooks.length == 0}}">
+      <view class="card-left">
+        <text>0</text>
+        <text style="font-size:medium">总藏书</text>
+      </view>
+      <view class="card-right">
+        <text>还没有图书，扫码添加吧</text>
+        <image></image>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="card-left">
+        <text>{{allBooks.length}}</text>
+        <text style="font-size:medium">总藏书</text>
+      </view>
+      <view class="card-right">
+        <text>{{util.truncate(allLast.title, 35)}}</text>
+        <image src="{{allLast.img}}"></image>
+      </view>
     </block>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{userInfo['openid']}}</text>
+  <view class="card">
+    <view class="card-left">
+      <text>{{readedBooks.length}}</text>
+      <text style="font-size:medium">已读</text>
+    </view>
+    <view class="card-right">
+      <text>{{util.truncate(readedLast.title, 35)}}</text>
+      <image src="{{readedLast.img}}"></image>
+    </view>
+  </view>
+  <view class="card">
+    <view class="card-left">
+      <text>{{unReadedBooks.length}}</text>
+      <text style="font-size:medium">未读</text>
+    </view>
+    <view class="card-right">
+      <text>{{util.truncate(unReadedLast.title, 35)}}</text>
+      <image src="{{unReadedLast.img}}"></image>
+    </view>
   </view>
 </view>

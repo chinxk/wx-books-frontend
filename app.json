@@ -1,5 +1,10 @@
 {
+  "useExtendedLib": {
+    "weui": true
+  },
+  "lazyCodeLoading": "requiredComponents",
   "pages": [
+    "pages/loading/loading",
     "pages/index/index",
     "pages/error/error",
     "pages/logs/logs",
@@ -10,15 +15,18 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "index"
+        "selectedIconPath": "/components/my-fill.png",
+        "iconPath": "/components/my.png"
       },
       {
         "pagePath": "pages/scan/scan",
-        "text": "scan"
+        "selectedIconPath": "/components/barcode-fill.png",
+        "iconPath": "/components/barcode.png"
       },
       {
         "pagePath": "pages/my/my",
-        "text": "my"
+        "selectedIconPath": "/components/library.png",
+        "iconPath": "/components/library-fill.png"
       }
     ]
   },

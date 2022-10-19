@@ -1,75 +1,93 @@
 // index.js
+import { AVATAR } from '../../utils/uri.js'
 // 获取应用实例
-const app = getApp()
-const userInfo = wx.getStorageSync('userInfo') || []
+// const app = getApp()
 
 Page({
   data: {
-    motto: 'Hello World',
-    userInfo: userInfo || {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    canIUseGetUserProfile: true,
-    // canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
-    canIUseOpenData: false
   },
-  // 事件处理函数
-  bindViewTap() {
-    wx.navigateTo({
-      url: '../logs/logs'
+
+  onShow: function () {
+
+    console.log('index onshow')
+    const userInfo = wx.getStorageSync('userInfo') || {}
+    const allBooks = wx.getStorageSync('myBooks') || []
+    const readedBooks = allBooks.filter(b => b.readed) || []
+    const unReadedBooks = allBooks.filter(b => !b.readed) || []
+
+    const allLast = allBooks.length > 0 ? allBooks[0].book : {}
+    const readedLast = readedBooks.length > 0 ? readedBooks[0].book : {}
+    const unReadedLast = unReadedBooks.length > 0 ? unReadedBooks[0].book : {}
+
+    this.setData({
+      allBooks: allBooks,
+      allLast: allLast,
+      readedBooks: readedBooks,
+      readedLast: readedLast,
+      unReadedBooks: unReadedBooks,
+      unReadedLast: unReadedLast,
+      userInfo: userInfo || {}
     })
   },
-  // onLoad() {
-  //   if (wx.getUserProfile) {
-  //     this.setData({
-  //       canIUseGetUserProfile: true
-  //     })
-  //   }
-  // },
+  // 事件处理函数
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
     wx.getUserProfile({
-      desc: '展示用户信息AAA', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+      desc: '获取用户昵称和头像用于展示', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: (res) => {
         console.log(res)
-        wx.setStorage({
-          key:"userInfo",
-          data:res.userInfo
-        })
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-        
+        if (this.data.userInfo.avatar_url != res.userInfo.avatarUrl) {
+          this.data.userInfo.nick_name = res.userInfo.nickName
+          this.data.userInfo.avatar_url = res.userInfo.avatarUrl
+          this.setData(this.data)
+
+          const token = wx.getStorageSync('token')
+          wx.request({
+            'url': AVATAR,
+            header: {
+              'Authorization': token
+            },
+            data: {
+              openid: this.data.userInfo.openid,
+              user: this.data.userInfo
+            },
+            method: 'POST',
+            success: r => {
+              if (r.statusCode == 200) {
+                console.log(r)
+                if (0 == r.data.status) {
+                  wx.setStorageSync('userInfo', this.data.userInfo)
+                } else {
+                  wx.showToast({
+                    title: '保存失败',
+                    duration: 2000,
+                    icon: 'none'
+                  });
+                }
+              } else {
+                console.error(r)
+                wx.showToast({
+                  title: '出错啦，稍后再试吧',
+                  duration: 2000,
+                  icon: 'none'
+                });
+              }
+            },
+            fail: r => {
+              console.error(r)
+              wx.showToast({
+                title: '出错啦，稍后再试吧',
+                duration: 2000,
+                icon: 'none'
+              });
+              console.log(r)
+            }
+          })
+        }
       },
       fail: err => {
         console.log("获取失败: ", err)
         // wx.exitMiniProgram()
-      }
-    })
-  },
-  getScanCode(e) {
-    wx.scanCode({
-      onlyFromCamera: true,
-      scanType: ['barCode'],
-      success: (result) => { console.log(result) },
-      fail: (res) => { console.log(res) },
-      complete: (res) => { },
-    })
-  },
-  addBooks(e) {
-    wx.request({
-      'url': 'http://192.168.0.15:3000/api/v1/users/storage',
-      header: {
-        'Authorization':  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiIzxVc2VyOjB4MDAwMDdmY2M1OGQ5NWZlMD4iLCJleHAiOjE2NDY5MDQ1MTB9.p0YeQum6s4t15zwZDJ0s2n7eSUvbWMb1_i5mmgduGUc"
-      },
-      data: {
-        openid: "ovoNP528lZfe3Xanmq4lzRnlhrrg",
-        book_ids: '3,4'
-      },
-      method: 'POST',
-      success: r => {
-        console.log(r)
       }
     })
   }

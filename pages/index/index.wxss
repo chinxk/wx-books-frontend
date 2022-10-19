@@ -1,19 +1,66 @@
 /**index.wxss**/
-.userinfo {
+.container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #aaa;
+  background-color: whitesmoke;
+  height: 100vh;
+  padding: 20rpx 10rpx;
 }
 
-.userinfo-avatar {
+.card {
+  display: flex;
+  background-color: white;
+  height: 25vh;
+  border-radius: 2vh;
+  width: 100%;
+  align-items: center;
+  /* border-top: ridge; */
+  margin: 5rpx;
+}
+
+.head image {
   overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
+  width: 180rpx;
+  height: 180rpx;
+  margin: 30rpx;
   border-radius: 50%;
 }
 
-.usermotto {
-  margin-top: 200px;
+.head text {
+  padding: 50rpx;
+  width: 200rpx;
+  font-size: large;
+  font-weight: 600;
+}
+
+.head button {
+  width: 20rpx;
+  float: right;
+  font-size: x-small;
+}
+
+.card .card-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30rpx;
+  width: 30vw;
+  text-align: center;
+  font-size: xx-large;
+  color: teal;
+}
+
+.card .card-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card .card-right>image {
+  width: 25vw;
+  height: 25vw;
+}
+
+.card .card-right>text {
+  width: 50vw;
+  font-weight: 400;
 }

@@ -1,5 +1,5 @@
 // pages/scan.js
-const util = require('../../utils/util.js')
+const URI = require('../../utils/uri.js')
 
 Page({
 
@@ -30,7 +30,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    console.log('scan onshow called')
+    this.data.isScannable = true
+    this.data.scannedCodes = []
+    this.data.scannedBooks = []
+    this.setData(this.data)
   },
 
   /**
@@ -70,9 +74,15 @@ Page({
   takeCode(e) {
     console.log('takecode');
     if (this.data.isScannable) {
+
+      this.effects()
+
       // 对扫码结果进行处理
       var isbn = e.detail.result
-      console.log(isbn);
+      // var i = parseInt(Math.random() * 10)%5
+      // var isbns = [9787536693968, 9787806472873,9787560140476, 9787562043706, 9787111422068]
+      // isbn = isbns[i]
+      // console.log(isbn);
       if (!(/^\d{10,13}$/.test(isbn))) {
         wx.showToast({
           title: '无效的ISBN',
@@ -81,10 +91,12 @@ Page({
         });
         return;
       }
-      // return if book has been scanned
-      if (this.data.scannedCodes.indexOf(isbn) > -1) {
+      // return if book has been scanned or exists
+      const myBooks = wx.getStorageSync('myBooks')
+      const existISBN = myBooks.map(b => { return b.book.isbn })
+      if (this.data.scannedCodes.includes(isbn) || existISBN.includes(isbn)) {
         wx.showToast({
-          title: '已扫描过的ISBN',
+          title: '该书已扫描过或已存在',
           duration: 2000,
           icon: 'none'
         });
@@ -92,9 +104,18 @@ Page({
       }
       // resolve isbn
       console.log("resolve isbn")
-      const token= wx.getStorageSync('token');
+      const token = wx.getStorageSync('token');
+
+      wx.showLoading({
+        title:'处理中...',
+        mask:true
+      });
+      this.setData({
+        isScannable: false
+      })
+
       wx.request({
-        'url': 'http://192.168.0.147:3000/api/v1/books/by_isbn',
+        'url': URI.BY_ISBN,
         header: {
           'Authorization': token
         },
@@ -103,48 +124,69 @@ Page({
         },
         method: 'GET',
         success: r => {
-          if(r.statusCode == 200){
-            var book = r.data.book
-            book.title = util.truncate(book.title,10)
-            book.author = util.truncate(book.author,10)
-            this.data.scannedBooks.push(book)
-            this.data.scannedCodes.push(isbn)
-            this.data.isScannable = false
-            // refresh appData
-            this.setData(this.data)
-            // console.log(r)
-          }else{
+          if (r.statusCode == 200) {
+            if ('ok' == r.data.status && r.data.book) {
+              let _book = r.data.book
+              // push to end, instead of unshift to head
+              this.data.scannedBooks.push({book:_book})
+              this.data.scannedCodes.push(isbn)
+              this.data.toViewId = 'book' + _book.id
+              // refresh appData
+              this.setData(this.data)
+              // console.log(r)
+            } else {
+              wx.showToast({
+                title: '未找到该书',
+                duration: 2000,
+                icon: 'none'
+              });
+            }
+          } else {
+            console.error(r)
             wx.showToast({
-              title: r.data.errors[0],
+              title: '出错啦，稍后再试吧',
               duration: 2000,
               icon: 'none'
             });
           }
         },
         fail: r => {
+          console.error(r)
           wx.showToast({
             title: '出错啦，稍后再试吧',
             duration: 2000,
             icon: 'none'
           });
           console.log(r)
+        },
+        complete: r => {
+          // hide loading and reactive scannable
+          wx.hideLoading()
+          this.setData({
+            isScannable: true
+          })
         }
       })
-
-      // reactive scannable
-      setTimeout(() => {
-        this.data.isScannable = true;
-      }, 1000)
     }
+  },
+  effects() {
+    // vibrate
+    wx.vibrateShort({
+      type: 'medium',
+    })
+    // sound effect
+    const innerAudioContext = wx.createInnerAudioContext()
+    innerAudioContext.autoplay = true
+    innerAudioContext.src = '/assets/scan.mp3'
   },
   stock() {
     let books = this.data.scannedBooks || []
-    let book_ids = books.map(i => {return i.id})
+    let book_ids = books.map(i => { return i.book.id })
     let userInfo = wx.getStorageSync('userInfo')
-    const token= wx.getStorageSync('token');
+    const token = wx.getStorageSync('token');
     console.log(book_ids)
     wx.request({
-      'url': 'http://192.168.0.147:3000/api/v1/users/storage',
+      'url': URI.STOCK,
       header: {
         'Authorization': token
       },
@@ -154,11 +196,14 @@ Page({
       },
       method: 'POST',
       success: r => {
-        if(r.statusCode == 200){
+        if (r.statusCode == 200) {
+          // update local view
+          const myBooks = wx.getStorageSync('myBooks')
+          wx.setStorageSync('myBooks', books.concat(myBooks))
           wx.switchTab({
             url: '../my/my',
           })
-        }else{
+        } else {
           wx.showToast({
             title: r.data.errors[0],
             duration: 2000,
