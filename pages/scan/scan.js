@@ -1,6 +1,10 @@
 // pages/scan.js
 const URI = require('../../utils/uri.js')
 
+const innerAudioContext = wx.createInnerAudioContext()
+innerAudioContext.autoplay = false
+innerAudioContext.src = '/assets/scan.mp3'
+
 Page({
 
   /**
@@ -75,7 +79,12 @@ Page({
     console.log('takecode');
     if (this.data.isScannable) {
 
-      this.effects()
+      // vibrate
+      wx.vibrateShort({
+        type: 'medium',
+      })
+      // sound effect
+      innerAudioContext.play()
 
       // 对扫码结果进行处理
       var isbn = e.detail.result
@@ -169,16 +178,7 @@ Page({
       })
     }
   },
-  effects() {
-    // vibrate
-    wx.vibrateShort({
-      type: 'medium',
-    })
-    // sound effect
-    const innerAudioContext = wx.createInnerAudioContext()
-    innerAudioContext.autoplay = true
-    innerAudioContext.src = '/assets/scan.mp3'
-  },
+
   stock() {
     let books = this.data.scannedBooks || []
     let book_ids = books.map(i => { return i.book.id })
