@@ -1,27 +1,35 @@
 <!--pages/scan.wxml-->
 <wxs module="util" src="../../utils/util.wxs"></wxs>
 
-<camera mode="scanCode" device-position="back" flash="off" bindscancode="takeCode">
-</camera>
-<scroll-view class="scanned-container" scroll-x="true" scroll-into-view="{{toViewId}}">
-  <view wx:for="{{scannedBooks}}" wx:key="id" class="scanned-book" id="book{{item.book.id}}">
-    <image src="{{item.book.img}}" mode="aspectFit"></image>
-    <text>{{util.truncate(item.book.title, 10)}}</text>
-    <text>{{util.truncate(item.book.author, 10)}}</text>
-  </view>
-</scroll-view>
-<view class="buttons-container">
-  <!-- <button type="primary" bindtap="takeCode">测试</button> -->
-  <button bindtap="stock">
-    <view class="btn-control-pannal">
-      <image class="svg-icon-small" src="/components/library.svg"></image>
-      <text>入库</text>
+<view class="scan-view">
+  <camera mode="scanCode" device-position="back" flash="off" bindscancode="takeCode">
+  <view class="qr-scanner">
+        <view class="box">
+            <view class="line"></view>
+            <view class="angle"></view>
+        </view>
     </view>
-  </button>
-  <button>
-    <view class="btn-control-pannal">
-      <image class="svg-icon-small" src="/components/cancel.svg"></image>
-      <text>取消</text>
-    </view>
-  </button>
+  </camera>
 </view>
+  <scroll-view class="scanned-container" scroll-x="true" scroll-into-view="{{toViewId}}">
+    <view wx:for="{{scannedBooks}}" wx:key="id" class="scanned-book" id="book{{item.book.id}}">
+      <image src="{{item.book.img}}" mode="aspectFit"></image>
+      <text>{{util.truncate(item.book.title, 10)}}</text>
+      <text>{{util.truncate(item.book.author, 10)}}</text>
+    </view>
+  </scroll-view>
+  <view class="buttons-container">
+    <!-- <button type="primary" bindtap="takeCode">测试</button> -->
+    <button bindtap="stock">
+      <view class="btn-control-pannal">
+        <image class="svg-icon-small" src="/components/library.svg"></image>
+        <text>入库</text>
+      </view>
+    </button>
+    <button>
+      <view class="btn-control-pannal">
+        <image class="svg-icon-small" src="/components/cancel.svg"></image>
+        <text>取消</text>
+      </view>
+    </button>
+  </view>
