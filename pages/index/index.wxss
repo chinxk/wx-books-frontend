@@ -32,10 +32,9 @@
   font-weight: 600;
 }
 
-.head button {
-  width: 20rpx;
-  float: right;
-  font-size: x-small;
+.userinfo-avatar {
+  padding: 0;
+  background: transparent
 }
 
 .card .card-left {
